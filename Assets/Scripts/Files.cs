@@ -5,14 +5,17 @@ using UnityEngine;
 public class Files : MonoBehaviour {
 
     [SerializeField] AudioClip biteSounds;
+
+
+    BoxCollider2D textBoxCollider;
 	// Use this for initialization
 	void Start () {
-		
+        
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        
 	}
 
     private void OnCollisionEnter2D(Collision2D collision)

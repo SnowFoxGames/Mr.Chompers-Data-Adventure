@@ -126,14 +126,14 @@ public class Player : MonoBehaviour {
     private void Jump()
     {
        // Debug.Log(myRigidBody.velocity.y);
-        if(myRigidBody.velocity.y > 0)
+       /* if(myRigidBody.velocity.y > 0)
         {
             myBody.enabled = false;
         }
         else
         {
             myBody.enabled = true;
-        }
+        }*/
         if(!myBody.IsTouchingLayers(LayerMask.GetMask("Platform")))
         {
             return;
