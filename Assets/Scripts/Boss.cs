@@ -101,7 +101,7 @@ public class Boss : MonoBehaviour {
         if (other.GetComponent<Player>()&& playerHit == false)
         {
             playerHit = true;
-            FindObjectOfType<Data>().TakeLives();
+            FindObjectOfType<GameSession>().TakeLives();
         }
     }
 }

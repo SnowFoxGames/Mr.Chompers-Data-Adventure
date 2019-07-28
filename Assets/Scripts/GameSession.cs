@@ -13,6 +13,8 @@ public class GameSession : MonoBehaviour {
     public float totalPercentage = 0.0f;
     public float percentPerCapita;
     public bool stopSpawning = false;
+    bool invulnerable = false;
+    float invulnerableTime = 2f;
 
 
     [Header("Tutorial")]
@@ -159,4 +161,53 @@ public class GameSession : MonoBehaviour {
         Scene level = SceneManager.GetActiveScene();
         SceneManager.LoadScene(level.buildIndex);
     }
+
+    public void TakeLives()
+    {
+        if(invulnerable == true)
+        {
+            return;
+        }
+        int remainingLives = lives.Count;
+        if (remainingLives <= 1)
+        {
+            DestroyHearts();
+            stopSpawning = true;
+            FindObjectOfType<Player>().Die();
+            Debug.Log("GameOver");
+        }
+        else
+        {
+            DestroyHearts();
+
+        }
+    }
+
+    private void DestroyHearts()
+    {
+        var liveNumber = lives.Count - 1;
+        Destroy(lives[liveNumber].gameObject);
+        lives.Remove(lives[liveNumber]);
+        StartCoroutine(Invulnerable());
+
+    }
+    public IEnumerator Invulnerable()
+    {
+        if(invulnerable == false)
+        {
+            var player = FindObjectOfType<Player>().GetComponent<SpriteRenderer>();
+
+            invulnerable = true;
+            Color hurt = player.color;
+            hurt.a = .5f;
+            player.color = hurt;
+            yield return new WaitForSeconds(invulnerableTime);
+            hurt.a = 1f;
+            player.color = hurt;
+            invulnerable = false;
+        }
+
+    }
+
+
 }

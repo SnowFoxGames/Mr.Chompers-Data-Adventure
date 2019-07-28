@@ -18,9 +18,24 @@ public class Files : MonoBehaviour {
         
 	}
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        AudioSource.PlayClipAtPoint(biteSounds, Camera.main.transform.position, .7f);
-        Destroy(gameObject);
+        if(other.gameObject.GetComponent<Player>())
+        {
+            AudioSource.PlayClipAtPoint(biteSounds, Camera.main.transform.position, .7f);
+            Destroy(gameObject); 
+        }
+
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.name == "Mouth")
+        {
+            AudioSource.PlayClipAtPoint(biteSounds, Camera.main.transform.position, .7f);
+            Destroy(gameObject);
+        }
+
+    }
+
 }

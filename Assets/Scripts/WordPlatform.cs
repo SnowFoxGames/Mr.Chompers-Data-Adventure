@@ -23,7 +23,16 @@ public class WordPlatform : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
        
-        if(playerFeet.transform.position.y >= platformTop.transform.position.y)
+       
+	}
+    private void LateUpdate()
+    {
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            Debug.Log("Go Down");
+            myBoxCollider.enabled = false;
+        }
+        else if (playerFeet.transform.position.y >= platformTop.transform.position.y && playerFeet !=null)
         {
             myBoxCollider.enabled = true;
         }
@@ -31,5 +40,6 @@ public class WordPlatform : MonoBehaviour {
         {
             myBoxCollider.enabled = false;
         }
-	}
+
+    }
 }

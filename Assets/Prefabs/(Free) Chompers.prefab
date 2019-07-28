@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 61931023542972564}
   m_Layer: 0
   m_Name: (Free) Chompers
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,8 +42,8 @@ GameObject:
   - component: {fileID: 4877013819637006}
   m_Layer: 0
   m_Name: Feet
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_TagString: Player
+  m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 58038587656867370}
   m_Layer: 9
   m_Name: Mouth
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -70,7 +70,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1408210366914406}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.06, y: 4.12, z: 0}
+  m_LocalPosition: {x: -5, y: -0.09, z: 0}
   m_LocalScale: {x: -0.3, y: 0.3, z: 1}
   m_Children:
   - {fileID: 4189000892025598}
@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1488584896506950}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.12, z: 0}
+  m_LocalPosition: {x: 0, y: -0.29, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4111188178939892}
@@ -166,7 +166,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -1.4299098, y: -0.05758679}
+  m_Offset: {x: -0.84695244, y: 0.18089658}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -177,7 +177,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.060694, y: 4.3091908}
+  m_Size: {x: 1.894779, y: 0.86443555}
   m_EdgeRadius: 0
 --- !u!95 &95347076033354316
 Animator:
@@ -212,7 +212,8 @@ MonoBehaviour:
   freeRoam: 1
   moveSpeed: 3
   jumpSpeed: 6
-  deathParticle: {fileID: 0}
+  deathParticle: {fileID: 1135144664085106, guid: 08c75f4970f6c4a999ff8a39498d127c,
+    type: 2}
   jumpSound: {fileID: 8300000, guid: de09311d6e7964ef0aced1b65ae4b3b8, type: 3}
   moveSound: {fileID: 0}
 --- !u!212 &212866189759199494

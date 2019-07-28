@@ -40,36 +40,12 @@ public class Data : MonoBehaviour {
         }
         else
         {
-            TakeLives();
+            gameSession.TakeLives();
         }
         AudioSource.PlayClipAtPoint(biteSounds, Camera.main.transform.position, .7f);
         Destroy(gameObject);
     }
 
-    public void TakeLives()
-    {
-        int remainingLives = gameSession.lives.Count;
-        if (remainingLives <= 1)
-        {
-            DestroyHearts();
-            gameSession.stopSpawning = true;
-            FindObjectOfType<Player>().Die();
-            Debug.Log("GameOver");
-        }
-        else
-        {
-            DestroyHearts();
-
-        }
-    }
-
-    private void DestroyHearts()
-    {
-        var liveNumber = gameSession.lives.Count - 1;
-        Destroy(gameSession.lives[liveNumber].gameObject);
-        gameSession.lives.Remove(gameSession.lives[liveNumber]);
-
-    }
-
+   
    
 }

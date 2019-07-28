@@ -159,8 +159,9 @@ public class Player : MonoBehaviour {
     }
     public void Die()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         GameObject xplode = Instantiate(deathParticle, transform.position, Quaternion.identity) as GameObject;
         FindObjectOfType<GameSession>().StartCoroutine(FindObjectOfType<GameSession>().GameOver());
     }
+
 }
