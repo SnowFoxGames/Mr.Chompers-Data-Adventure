@@ -54,11 +54,12 @@ MonoBehaviour:
   percentTracker: {fileID: 0}
   goalNumber: 8
   inDataStream: 1
-  nextSceneName: 
+  nextSceneName: Windows Level
   lives: []
   totalPercentage: 0
   percentPerCapita: 0
   stopSpawning: 0
+  damageSound: {fileID: 8300000, guid: 6c3adffdf788d49218d583a9b1c8ca24, type: 3}
   tutorial1: {fileID: 0}
   tutorial2: {fileID: 0}
   winText: {fileID: 0}

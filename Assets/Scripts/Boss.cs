@@ -45,11 +45,7 @@ public class Boss : MonoBehaviour {
         }
     }
 
-    private void Drop()
-    {
-        
-
-    }
+  
 
     IEnumerator Attack()
     {

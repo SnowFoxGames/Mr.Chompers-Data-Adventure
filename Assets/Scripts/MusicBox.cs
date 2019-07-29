@@ -28,6 +28,7 @@ public class MusicBox : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        DebugPlayMusic();
 		
 	}
     public void PlayStartMusic()
@@ -54,6 +55,13 @@ public class MusicBox : MonoBehaviour {
         GetComponent<AudioSource>().clip = bossMusic;
         audioSource.volume = .5f;
         audioSource.Play();
+    }
+    void DebugPlayMusic()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            PlayBossMusic();
+        }
     }
    
 }

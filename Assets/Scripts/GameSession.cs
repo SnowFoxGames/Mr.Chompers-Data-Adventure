@@ -16,6 +16,8 @@ public class GameSession : MonoBehaviour {
     bool invulnerable = false;
     float invulnerableTime = 2f;
 
+    [Header("Sounds")]
+    [SerializeField] AudioClip damageSound;
 
     [Header("Tutorial")]
     [SerializeField] GameObject tutorial1;
@@ -31,6 +33,7 @@ public class GameSession : MonoBehaviour {
     [SerializeField] GameObject boss;
     [SerializeField] GameObject bossDuplicate;
 	// Use this for initialization
+
 	void Start () {
         stopSpawning = true;
         Debug.Log(totalPercentage);
@@ -109,6 +112,11 @@ public class GameSession : MonoBehaviour {
             {
                 FindObjectOfType<MusicBox>().PlayPeppyusic();
                 GameObject clone = Instantiate(bossDuplicate, boss.transform.position, Quaternion.identity) as GameObject;
+                var laserCount = FindObjectsOfType<Laser>();
+                foreach (Laser laser in laserCount)
+                {
+                    Destroy(laser.gameObject);
+                }
                 Destroy(boss.gameObject);
                 finalFight = false;
                 CountFiles();
@@ -185,6 +193,7 @@ public class GameSession : MonoBehaviour {
 
     private void DestroyHearts()
     {
+        AudioSource.PlayClipAtPoint(damageSound, Camera.main.transform.position, 1f);
         var liveNumber = lives.Count - 1;
         Destroy(lives[liveNumber].gameObject);
         lives.Remove(lives[liveNumber]);

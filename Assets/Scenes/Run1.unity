@@ -598,11 +598,6 @@ Prefab:
       objectReference: {fileID: 857028727}
     - target: {fileID: 114976673627886730, guid: 64b9b2ddccb0e45288136a0c32d9c413,
         type: 2}
-      propertyPath: nextSceneName
-      value: Windows Level
-      objectReference: {fileID: 0}
-    - target: {fileID: 114976673627886730, guid: 64b9b2ddccb0e45288136a0c32d9c413,
-        type: 2}
       propertyPath: tutorial1
       value: 
       objectReference: {fileID: 2001643185}

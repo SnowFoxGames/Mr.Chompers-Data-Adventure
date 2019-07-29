@@ -6,6 +6,7 @@ public class Gwain : MonoBehaviour {
 
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float stabSpeed = 4f;
+    [SerializeField] float rotationSpeed = 4f;
     [SerializeField] GameObject flash;
     [SerializeField] float flashInterval = .25f;
     [SerializeField] GameObject laser;
@@ -21,6 +22,11 @@ public class Gwain : MonoBehaviour {
     [SerializeField] float idleTime = 5f;
     [SerializeField] float aimTime = 5f;
     [SerializeField] float returnDelay = 2f;
+
+    [Header("Sounds")]
+    [SerializeField] AudioClip chestBeep;
+    [SerializeField] AudioClip stabCharge;
+    [SerializeField] AudioClip laserCharge;
 
     enum State{Idle, Stab,Fire, Return}
 
@@ -44,10 +50,15 @@ public class Gwain : MonoBehaviour {
         pointOfOrigin = transform.position;
         player = (Player)FindObjectOfType(typeof(Player));
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+
+    private void FixedUpdate()
+    {
         text.transform.rotation = Quaternion.identity;
+    }
+    void Update () {
+       
         TrackPlayer();
         switch (currentState)
         {
@@ -111,17 +122,21 @@ public class Gwain : MonoBehaviour {
             Debug.Log("Sword");
             yield return new WaitForSeconds(aimTime);
             Debug.Log("Attack");
+
+            flash.gameObject.SetActive(true);
+            AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(false);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(true);
+            AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(false);
             Vector3 playerPosition = player.transform.position;
             trackPlayer = false;
-            flash.gameObject.SetActive(true);
-            yield return new WaitForSeconds(flashInterval);
-            flash.gameObject.SetActive(false);
-            yield return new WaitForSeconds(flashInterval);
-            flash.gameObject.SetActive(true);
-            yield return new WaitForSeconds(flashInterval);
-            flash.gameObject.SetActive(false);
             yield return new WaitForSeconds(flashInterval);
 
+            AudioSource.PlayClipAtPoint(stabCharge, Camera.main.transform.position, .4f);
             while (transform.position != playerPosition)
             {
                 if (wait == false)
@@ -144,24 +159,35 @@ public class Gwain : MonoBehaviour {
     {
         if (trackPlayer == true) 
         {
-            Vector2 playerPosition = player.transform.position;
-            Vector2 direction = new Vector2(playerPosition.x - transform.position.x,
-                                            playerPosition.y - transform.position.y);
-            transform.up = -direction;
+            Vector3 playerPosition = player.transform.position;
+            Vector3 direction = new Vector3(playerPosition.x - transform.position.x,
+                                            playerPosition.y - transform.position.y,
+                                            transform.position.z);
+            if(transform.up != -direction)
+            {
+                transform.up += -direction*Time.deltaTime*rotationSpeed;
+            }
+
+
         }
 
     }
     void ResetPosition()
     {
-        transform.up = new Vector3 (0, 0, 0);
+        Vector3 rotationReset = new Vector3 (0, 0, 0);
+        Vector3 direction = new Vector3(transform.position.x, -10 - transform.position.y, transform.position.z); 
        
         transform.position = Vector2.MoveTowards(transform.position, pointOfOrigin, moveSpeed * Time.deltaTime);
         if(transform.position != pointOfOrigin)
         {
-            
+            if(transform.up != -direction)
+            {
+                transform.up += -direction * Time.deltaTime * rotationSpeed;
+            }
         }
         else
         {
+            transform.up = rotationReset;
             currentState = State.Idle;
         }
     }
@@ -170,7 +196,9 @@ public class Gwain : MonoBehaviour {
     {
         if(spawningLaser == false)
         {
+            
             spawningLaser = true;
+            yield return new WaitForSeconds(.5f);
 
             for (int i = 0; i < laserQuantity; i++)
             {
@@ -214,6 +242,7 @@ public class Gwain : MonoBehaviour {
         else
         {
             magicParticle.SetActive(true);
+            AudioSource.PlayClipAtPoint(laserCharge, Camera.main.transform.position, .7f);
         }
 
     }

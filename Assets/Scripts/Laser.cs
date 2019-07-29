@@ -10,6 +10,13 @@ public class Laser : MonoBehaviour {
     [SerializeField] float laserDelay = 2f;
     [SerializeField] float laserDuration = 2f;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip laserSpawn;
+    [SerializeField] AudioClip laserFire;
+    [SerializeField] AudioClip laserBurning;
+    
+    
+
 
 
     Animator myAnimator;
@@ -17,14 +24,17 @@ public class Laser : MonoBehaviour {
     public bool isOn;
 
     bool firing;
+    bool loading;
+    bool playingLaserSound = false;
     public bool ending;
 	// Use this for initialization
 	void Start () {
         firing = false;
         isOn = false;
         laserBeam.SetActive(false);
+        loading = false;
         myAnimator = GetComponent<Animator>();
-
+        AudioSource.PlayClipAtPoint(laserSpawn, Camera.main.transform.position);
         StartCoroutine(CountDown(laserDelay));
 	}
 	
@@ -39,6 +49,11 @@ public class Laser : MonoBehaviour {
         if(isOn == true)
         {
             StartCoroutine(LaserLength());
+            if(playingLaserSound == false)
+            {
+                playingLaserSound = true;
+                AudioSource.PlayClipAtPoint(laserBurning, Camera.main.transform.position, .05f);
+            }
         }
 
     }
@@ -47,6 +62,7 @@ public class Laser : MonoBehaviour {
         if (firing == false)
         {
             firing = true;
+
             laserBeam.gameObject.transform.localScale = new Vector2(laserBeam.transform.localScale.x, laserBeam.transform.localScale.y + growRate);
             yield return new WaitForSeconds(growSpeed);
             firing = false;
@@ -55,15 +71,23 @@ public class Laser : MonoBehaviour {
     public void TurnOnLaser()
     {
         isOn = true;
+        AudioSource.PlayClipAtPoint(laserFire, Camera.main.transform.position, .4f);
         myAnimator.SetBool("firing", false);
     }
     IEnumerator CountDown(float delayTime)
     {
-        Debug.Log("Firing in: " + delayTime);
-        yield return new WaitForSeconds(delayTime);
-        laserBeam.SetActive(true);
-        Debug.Log("Fire");
-        myAnimator.SetBool("firing", true);
+        if(loading == false)
+        {
+            loading = true;
+            Debug.Log("Firing in: " + delayTime);
+            yield return new WaitForSeconds(delayTime);
+
+            laserBeam.SetActive(true);
+            Debug.Log("Fire");
+            myAnimator.SetBool("firing", true);
+
+        }
+       
     }
     void DestroyLaser()
     {
