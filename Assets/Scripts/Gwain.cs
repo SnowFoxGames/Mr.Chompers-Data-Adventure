@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Gwain : MonoBehaviour {
+    
+    [SerializeField] GameObject text;
 
+    [Header("Speeds")]
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float stabSpeed = 4f;
     [SerializeField] float rotationSpeed = 4f;
+    [Header("Sword Mode Stuff")]
     [SerializeField] GameObject flash;
     [SerializeField] float flashInterval = .25f;
-    [SerializeField] GameObject laser;
+    bool becameSword;
+    bool trackPlayer;
 
+    [Header("Laser Mode Stuff")]
+    [SerializeField] GameObject laser;
     [SerializeField] float yLaserPos;
     [SerializeField] float xLaserPos;
     [SerializeField] int laserQuantity = 3;
-
-    [SerializeField] GameObject text;
     [SerializeField] GameObject magicParticle;
+    bool spawningLaser;
 
     [Header("Times")]
     [SerializeField] float idleTime = 5f;
@@ -29,12 +35,18 @@ public class Gwain : MonoBehaviour {
     [SerializeField] AudioClip laserCharge;
     [SerializeField] AudioClip swordCharge;
 
+    [Header("IdlePoints")]
+    [SerializeField] GameObject topPoint;
+    [SerializeField] GameObject bottomPoint;
+    [SerializeField] float idleFloatSpeed = 1;
+    bool becameIdle;
+    bool goUp;
+
     enum State{Idle, Stab,Fire, Return}
 
-    bool becameIdle;
-    bool becameSword;
-    bool trackPlayer;
-    bool spawningLaser;
+
+   
+
     Vector3 pointOfOrigin;
 
     Animator myAnimator;
@@ -46,6 +58,7 @@ public class Gwain : MonoBehaviour {
         becameSword = false;
         trackPlayer = false;
         spawningLaser = false;
+        goUp = false;
         currentState = State.Idle;
         myAnimator = GetComponent<Animator>();
         pointOfOrigin = transform.position;
@@ -67,6 +80,7 @@ public class Gwain : MonoBehaviour {
                 
                 myAnimator.SetBool("isSword", false);
                 myAnimator.SetBool("raiseArm", false);
+                IdleMovement();
                 FlipSprite();
                 if(player.isActiveAndEnabled)
                 {
@@ -93,6 +107,25 @@ public class Gwain : MonoBehaviour {
         }
 	}
 
+    void IdleMovement()
+    {
+        if(goUp == true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, topPoint.transform.position, idleFloatSpeed * Time.deltaTime);
+            if (transform.position.y >= topPoint.transform.position.y) 
+            {
+                goUp = false;
+            }
+        }
+        else
+        {
+            transform.position = Vector2.MoveTowards(transform.position, bottomPoint.transform.position, idleFloatSpeed * Time.deltaTime);
+            if (transform.position.y <= bottomPoint.transform.position.y)
+            {
+                goUp = true;
+            }
+        }
+    }
   
 
     IEnumerator ChangeFromIdle()
@@ -104,6 +137,7 @@ public class Gwain : MonoBehaviour {
             yield return new WaitForSeconds(idleTime);
 
             currentState = (State)Random.Range(1, 3);
+            pointOfOrigin = transform.position;
             Debug.Log("Switching to: "+ currentState);
             becameIdle = false;
         }

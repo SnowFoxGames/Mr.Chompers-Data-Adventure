@@ -104,7 +104,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1326752144443928}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.07922655, y: 0.42333853, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children:
   - {fileID: 4921484516002456}
@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a97f52da6e24351b96eb823a0e22be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 1468306924716738}
   moveSpeed: 4
   stabSpeed: 6
   rotationSpeed: 2
@@ -258,7 +259,6 @@ MonoBehaviour:
   yLaserPos: 3.5
   xLaserPos: 7
   laserQuantity: 8
-  text: {fileID: 1468306924716738}
   magicParticle: {fileID: 1688518822865624}
   idleTime: 2
   aimTime: 2
@@ -267,6 +267,9 @@ MonoBehaviour:
   stabCharge: {fileID: 8300000, guid: d270ccbac0f23426bafd3facd0d176a5, type: 3}
   laserCharge: {fileID: 8300000, guid: d91f6f29bbac54f48acb89d2b49970cd, type: 3}
   swordCharge: {fileID: 8300000, guid: 30ec0334c30c74735a422d66f0a1270f, type: 3}
+  topPoint: {fileID: 0}
+  bottomPoint: {fileID: 0}
+  idleFloatSpeed: 1
 --- !u!114 &114833147449506018
 MonoBehaviour:
   m_ObjectHideFlags: 1
