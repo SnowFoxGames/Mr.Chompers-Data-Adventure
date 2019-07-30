@@ -266,6 +266,7 @@ MonoBehaviour:
   chestBeep: {fileID: 8300000, guid: 000acbb5d155848c0a59de5c67df8cda, type: 3}
   stabCharge: {fileID: 8300000, guid: d270ccbac0f23426bafd3facd0d176a5, type: 3}
   laserCharge: {fileID: 8300000, guid: d91f6f29bbac54f48acb89d2b49970cd, type: 3}
+  swordCharge: {fileID: 8300000, guid: 30ec0334c30c74735a422d66f0a1270f, type: 3}
 --- !u!114 &114833147449506018
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -27,6 +27,7 @@ public class Gwain : MonoBehaviour {
     [SerializeField] AudioClip chestBeep;
     [SerializeField] AudioClip stabCharge;
     [SerializeField] AudioClip laserCharge;
+    [SerializeField] AudioClip swordCharge;
 
     enum State{Idle, Stab,Fire, Return}
 
@@ -116,6 +117,7 @@ public class Gwain : MonoBehaviour {
             bool wait = false;
 
             becameSword = true;
+            AudioSource.PlayClipAtPoint(swordCharge, Camera.main.transform.position, .7f);
             yield return new WaitForSeconds(1);
             trackPlayer = true;
 
