@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Win Screen.unity
     guid: aa89f49571540403ab5de9c191eb8c7a
+  - enabled: 1
+    path: Assets/Scenes/Gwain Boss Level.unity
+    guid: 2d1289389c74448b4bc8cfc9c31f52b7
   m_configObjects: {}

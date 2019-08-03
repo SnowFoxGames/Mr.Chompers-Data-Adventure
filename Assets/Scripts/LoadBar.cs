@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class LoadBar : MonoBehaviour {
 
     [SerializeField] Slider loadbar;
-    [SerializeField] string firstLevel;
+    [SerializeField] string levelName;
+    [SerializeField] bool playBossMusic;
     bool isloaded;
 	// Use this for initialization
 	void Start () {
@@ -29,9 +30,17 @@ public class LoadBar : MonoBehaviour {
 
     IEnumerator StartGame()
     {
-        FindObjectOfType<MusicBox>().PlayPeppyusic();
+        if(playBossMusic)
+        {
+            FindObjectOfType<MusicBox>().PlayBossMusic();
+        }
+        else
+        {
+            FindObjectOfType<MusicBox>().PlayPeppyusic();
+        }
+
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(firstLevel);
+        SceneManager.LoadScene(levelName);
     }
 
 
