@@ -7,7 +7,9 @@ public class EnergyBeams : MonoBehaviour {
     [SerializeField] EnergyParticle energy;
     [SerializeField] float spawnDelay = 1f;
     [SerializeField] GameObject target;
-    bool spawning = false;
+    
+    public bool spawning = false;
+    public bool delaying = false;
 	// Use this for initialization
 	void Start () {
 		
@@ -15,7 +17,25 @@ public class EnergyBeams : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        StartCoroutine(CreateEnergy());
+        if(delaying == false)
+        {
+            Debug.Log("Spwan ENergy");
+            StartCoroutine(CreateEnergy());
+        }
+        else
+        {
+            Debug.Log("Destroy Energy");
+            var particle = FindObjectsOfType<EnergyParticle>();
+            foreach (var item in particle)
+            {
+                if(item)
+                {
+                    Destroy(item.gameObject);
+                }
+
+            }
+        }
+
 	}
     IEnumerator CreateEnergy()
     {
@@ -31,5 +51,10 @@ public class EnergyBeams : MonoBehaviour {
 
         spawning = false;
 
+    }
+    public IEnumerator DelayParticles(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        delaying = false;
     }
 }

@@ -7,10 +7,12 @@ public class ShieldTrap : MonoBehaviour {
 
     [SerializeField] GameObject outerShield;
     [SerializeField] float buffer = .3f;
+    [SerializeField] float trapDistance = 1f;
 
     bool trapped = false;
     Player player;
     float radius;
+    float distance;
     Vector2 playerPosition;
     Vector2 playerRelativePosition;
 
@@ -27,6 +29,8 @@ public class ShieldTrap : MonoBehaviour {
         playerPosition = player.transform.position;
         playerRelativePosition = new Vector2(player.transform.position.x - transform.position.x,
                                                     player.transform.position.y - transform.position.y);
+        distance = Mathf.Sqrt(Mathf.Pow(playerRelativePosition.x, 2) + Mathf.Pow(playerRelativePosition.y, 2));
+
         outerShield.SetActive(false);
         DetectPlayerPosition();
         RestrictMovement();
@@ -41,13 +45,12 @@ public class ShieldTrap : MonoBehaviour {
 
     private void DetectPlayerPosition()
     {
-        if (playerRelativePosition.x > (radius - buffer)|| playerRelativePosition.x < (radius - buffer) * -1 ||
-            playerRelativePosition.y > (radius - buffer) || playerRelativePosition.y < (radius - buffer) * -1 &&
+        if (distance >= trapDistance &&
             trapped == false)
         {
             
             Debug.Log("Not Trapped");
-           // ToggleBarrier();
+           ToggleBarrier();
         }
         else
         {
@@ -62,18 +65,20 @@ public class ShieldTrap : MonoBehaviour {
 
         if(trapped == true)
         {
-            if (playerRelativePosition.x > (radius + buffer) || playerRelativePosition.x < (radius + buffer) * -1)
+            player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+
+           /* if (playerRelativePosition.x > (radius) || playerRelativePosition.x < (radius) * -1)
             {
-                player.transform.position = new Vector2((transform.position.x) + ((radius + buffer) * (playerRelativePosition.x /
+                player.transform.position = new Vector2((transform.position.x) + ((radius) * (playerRelativePosition.x /
                                                          Mathf.Abs(playerRelativePosition.x))),
                                                         playerPosition.y);
             }
 
-            if (playerRelativePosition.y > (radius + buffer)|| playerRelativePosition.y < (radius + buffer) * -1)
+            if (playerRelativePosition.y > (radius)|| playerRelativePosition.y < (radius) * -1)
             {
-                player.transform.position = new Vector2(playerPosition.x, transform.position.y + ((radius + buffer) * (playerRelativePosition.y /
+                player.transform.position = new Vector2(playerPosition.x, transform.position.y + ((radius) * (playerRelativePosition.y /
                                                          Mathf.Abs(playerRelativePosition.y))));
-            }
+            }*/
         }
 
 
