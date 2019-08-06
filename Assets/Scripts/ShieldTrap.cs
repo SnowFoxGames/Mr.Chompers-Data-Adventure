@@ -8,8 +8,14 @@ public class ShieldTrap : MonoBehaviour {
     [SerializeField] GameObject outerShield;
     [SerializeField] float buffer = .3f;
     [SerializeField] float trapDistance = 1f;
+    public float moveSpeed;
+    public float delaySeconds =5f;
+    [SerializeField] GameObject trap;
+    [SerializeField] GameObject bubbleBackground;
 
     bool trapped = false;
+    bool moving = true;
+    bool countingDown;
     Player player;
     float radius;
     float distance;
@@ -38,25 +44,29 @@ public class ShieldTrap : MonoBehaviour {
     // Update is called once per frame
     void Update () 
     {
-        
+        MoveTowardPlayer();
 
 
 	}
 
     private void DetectPlayerPosition()
     {
-        if (distance >= trapDistance &&
+        if(moving == false)
+        {
+            if (distance >= trapDistance &&
             trapped == false)
-        {
-            
-            Debug.Log("Not Trapped");
-           ToggleBarrier();
+            {
+
+                Debug.Log("Not Trapped");
+                ToggleBarrier();
+            }
+            else
+            {
+                Debug.Log("Trapped");
+                trapped = true;
+            }
         }
-        else
-        {
-            Debug.Log("Trapped");
-            trapped = true;
-        }
+
     }
 
     void RestrictMovement()
@@ -87,5 +97,33 @@ public class ShieldTrap : MonoBehaviour {
     void ToggleBarrier()
     {
         outerShield.SetActive(true);
+    }
+
+    void MoveTowardPlayer()
+    {
+        if(moving == true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, moveSpeed * Time.deltaTime);
+            StartCoroutine(CountdownToBubble());
+        }
+
+    }
+    IEnumerator CountdownToBubble()
+    {
+        if(countingDown == false)
+        {
+            countingDown = true;
+            yield return new WaitForSeconds(delaySeconds);
+            Color temp = bubbleBackground.GetComponent<SpriteRenderer>().color;
+
+            temp.a = 1;
+
+            bubbleBackground.GetComponent<SpriteRenderer>().color = temp; 
+
+            trap.SetActive(true);
+            moving = false;
+        }
+
+
     }
 }

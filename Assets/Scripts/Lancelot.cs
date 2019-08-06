@@ -7,6 +7,11 @@ public class Lancelot : MonoBehaviour {
     [SerializeField]bool shieldsOn = false;
     [SerializeField] List<Shield> shields = new List<Shield>();
     [SerializeField] List<EnergyBeams> beams = new List<EnergyBeams>();
+    [SerializeField]List<Files> files = new List<Files>();
+
+    [SerializeField] ParticleSystem handParticle;
+    [SerializeField] GameObject flash;
+    [SerializeField] float flashInterval = .25f;
 
     [SerializeField] bool tempDeactivate;
     [SerializeField] float gravityScale = 8f;
@@ -14,14 +19,32 @@ public class Lancelot : MonoBehaviour {
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float chargeSpeed = 4f;
     [SerializeField] float rechargeTime = 3f;
+    [SerializeField] float chargeDelay = 1f;
 
     [Header("Times")]
     [SerializeField] float idleTime = 5f;
     [SerializeField] float aimTime = 5f;
     [SerializeField] float returnDelay = 2f;
 
+    [Header("Containment Field")]
+    [SerializeField] ShieldTrap containmentField;
+    [SerializeField] int contFieldQuantity = 0;
+    [SerializeField] float xFieldPos;
+    [SerializeField] float yFieldPos;
+    [SerializeField] float trapDelay;
+    [SerializeField] float fieldSpeed = 2.5f;
+    [Header("ShieldBeam")]
+    [SerializeField] ShieldBeam shieldBeam;
+    [SerializeField] int shieldBeamQuantity = 0;
+    [SerializeField] float xShieldBeamPos;
+    [SerializeField] float yShieldBeamPos;
+    [SerializeField] float beamSpeed = 2.5f;
+
+
+
     bool becameIdle;
     bool becameShield;
+    bool armRaised;
     bool recharging;
     bool impact;
     enum State { Idle, Contain, WallOff, Charge, Deactive, Return }
@@ -42,6 +65,10 @@ public class Lancelot : MonoBehaviour {
         player = (Player)FindObjectOfType(typeof(Player));
         myCollider = GetComponent<PolygonCollider2D>();
         currentState = State.Idle;
+        containmentField.delaySeconds = trapDelay;
+        containmentField.moveSpeed = fieldSpeed;
+        shieldBeam.growthRate = beamSpeed;
+
         pointOfOrigin = transform.position;
         FindShieldsAndBeams();
     }
@@ -58,24 +85,27 @@ public class Lancelot : MonoBehaviour {
         {
             case State.Idle:
                 pointOfOrigin = transform.position;
+                myRigidBody.velocity = new Vector2(0, 0);
                 myAnimator.SetBool("isShield", false);
                 FlipSprite();
                 StartCoroutine(ChangeFromIdle());
                 break;
             case State.Contain:
                 FlipSprite();
-                currentState = State.Charge; //Temp
+                 //temp
+                StartCoroutine(SpawnContainmentField());
                 break;
             case State.WallOff:
                 FlipSprite();
-                currentState = State.Charge; //Temp
+                StartCoroutine(SpawnShieldBeams());
+                //currentState = State.Charge; //Temp
                 break;
             case State.Charge:
 
                 StartCoroutine(ChargeAtPlayer());
                 break;
             case State.Deactive:
-                
+                DestroyTraps();
                 myRigidBody.gravityScale = gravityScale;
                 myCollider.enabled = true;
                 tempDeactivate = true;
@@ -117,6 +147,10 @@ public class Lancelot : MonoBehaviour {
                     beams[i].delaying = true;
                     beams[i].gameObject.SetActive(false);
                 }
+                if(files[i])
+                {
+                    files[i].GetComponent<BoxCollider2D>().enabled = false;
+                }
             }
         }
         else
@@ -130,9 +164,14 @@ public class Lancelot : MonoBehaviour {
 
                     beams[i].StartCoroutine(beams[i].DelayParticles(2f));
                 }
+                if (files[i])
+                {
+                    files[i].GetComponent<BoxCollider2D>().enabled = true;
+                }
             }
         }
     }
+
     private void FindShieldsAndBeams()
     {
         var shieldCount = FindObjectsOfType<Shield>();
@@ -145,7 +184,13 @@ public class Lancelot : MonoBehaviour {
         {
             beams.Add(beamCount[i]);
         }
+        var fileCount = FindObjectsOfType<Files>();
+        for (int i = 0; i < fileCount.Length; i++)
+        {
+            files.Add(fileCount[i]);
+        }
     }
+
     private void Deactivate()
     {
         if(tempDeactivate)
@@ -159,6 +204,7 @@ public class Lancelot : MonoBehaviour {
             shieldsOn = true;
         }
     }
+
     void TrackPlayer()
     {
         Vector3 playerPosition = player.transform.position;
@@ -170,6 +216,7 @@ public class Lancelot : MonoBehaviour {
             transform.right += -direction * Time.deltaTime * rotationSpeed;
         }
     }
+
     private void FlipSprite()
     {
 
@@ -178,6 +225,7 @@ public class Lancelot : MonoBehaviour {
         //text.transform.localScale = new Vector2(transform.localScale.x / Mathf.Abs(transform.localScale.x), 1);
 
     }
+
     IEnumerator ChargeAtPlayer()
     {
         if(becameShield == false)
@@ -186,8 +234,20 @@ public class Lancelot : MonoBehaviour {
             becameShield = true;
            myCollider.enabled = false;
             myAnimator.SetBool("isShield", true);
-            yield return new WaitForSeconds(1f);
+
+            yield return new WaitForSeconds(chargeDelay);
+            flash.gameObject.SetActive(true);
+            //AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(false);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(true);
+            //AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            yield return new WaitForSeconds(flashInterval);
+            flash.gameObject.SetActive(false);
             Vector3 playerPosition = player.transform.position;
+           // trackPlayer = false;
+            yield return new WaitForSeconds(flashInterval);
             while (transform.position != playerPosition)
             {
                 if (wait == false)
@@ -205,6 +265,7 @@ public class Lancelot : MonoBehaviour {
         }
 
     }
+
     IEnumerator Recharge()
     {
         if(recharging == false)
@@ -217,6 +278,7 @@ public class Lancelot : MonoBehaviour {
         }
 
     }
+
     void ReturnToPosition()
     {
         myRigidBody.gravityScale = 0;
@@ -240,5 +302,83 @@ public class Lancelot : MonoBehaviour {
         }
     }
 
+    IEnumerator SpawnContainmentField()
+    {
+        if(armRaised == false)
+        {
+            armRaised = true;
+            myAnimator.SetBool("armRaised", true);
+            yield return new WaitForSeconds(.5f);
+            for (int i = 0; i < contFieldQuantity; i++)
+            {
+                yield return new WaitForSeconds(0.5f);
+
+                Vector2 fieldPos = new Vector2(Mathf.Round(Random.Range(-xFieldPos, xFieldPos)), 
+                                               Mathf.Round(Random.Range(-yFieldPos, yFieldPos)));
+                //Debug.Log(laserPos);
+                ShieldTrap newField = Instantiate(containmentField, fieldPos, Quaternion.identity);
+            }
+            myAnimator.SetBool("armRaised", false);
+            yield return new WaitForSeconds(3f);
+
+            currentState = State.Charge;
+            armRaised = false;
+
+
+        }
+    }
+
+    void DestroyTraps()
+    {
+        var shieldCollection = FindObjectsOfType<ShieldTrap>();
+        foreach (var shield in shieldCollection)
+        {
+            Destroy(shield.gameObject);
+        }
+        var shieldBeamCollection = FindObjectsOfType<ShieldBeam>();
+        foreach (var beam in shieldBeamCollection)
+        {
+            Destroy(beam.gameObject);
+        }
+    }
+    IEnumerator SpawnShieldBeams()
+    {
+        if (armRaised == false)
+        {
+            armRaised = true;
+            myAnimator.SetBool("armRaised", true);
+            yield return new WaitForSeconds(.5f);
+            Quaternion rotation = Quaternion.Euler(0, 0, Random.Range(0, 181));
+
+            for (int i = 0; i < shieldBeamQuantity; i++)
+            {
+                yield return new WaitForSeconds(0.5f);
+
+                Vector2 beamPos = new Vector2(Mathf.Round(Random.Range(-xShieldBeamPos, xShieldBeamPos)),
+                                              Mathf.Round(Random.Range(-yShieldBeamPos, yShieldBeamPos)));
+                //Debug.Log(laserPos);
+                Quaternion skew = Quaternion.Euler(0, 0, 30 *i);
+                ShieldBeam newBeam = Instantiate(shieldBeam, beamPos, rotation*skew);
+            }
+            myAnimator.SetBool("armRaised", false);
+            yield return new WaitForSeconds(3f);
+
+            currentState = State.Charge;
+            armRaised = false;
+
+
+        }
+    }
+    public void ToggleHandParticles()
+    {
+        if(handParticle.gameObject.activeInHierarchy)
+        {
+            handParticle.gameObject.SetActive(false);
+        }
+        else
+        {
+            handParticle.gameObject.SetActive(true);
+        }
+    }
 
 }
