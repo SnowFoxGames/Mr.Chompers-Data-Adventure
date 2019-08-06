@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Body
+  - Platform
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - Body
   - Lancelot
   - LancelotBarrier
-  - 
-  - 
+  - LancelotBody
+  - Player
   - 
   - 
   - 

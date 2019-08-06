@@ -12,6 +12,10 @@ public class Lancelot : MonoBehaviour {
     [SerializeField] ParticleSystem handParticle;
     [SerializeField] GameObject flash;
     [SerializeField] float flashInterval = .25f;
+    [SerializeField] GameObject topPoint;
+    [SerializeField] GameObject bottomPoint;
+    [SerializeField] float idleFloatSpeed = 1f;
+    [SerializeField] GameObject solidBody;
 
     [SerializeField] bool tempDeactivate;
     [SerializeField] float gravityScale = 8f;
@@ -47,6 +51,7 @@ public class Lancelot : MonoBehaviour {
     bool armRaised;
     bool recharging;
     bool impact;
+    bool goUp;
     enum State { Idle, Contain, WallOff, Charge, Deactive, Return }
 
 
@@ -55,7 +60,7 @@ public class Lancelot : MonoBehaviour {
     Animator myAnimator;
     Rigidbody2D myRigidBody;
     Player player;
-    PolygonCollider2D myCollider;
+    PolygonCollider2D myTrigger;
 
 	// Use this for initialization
 	void Start ()
@@ -63,7 +68,7 @@ public class Lancelot : MonoBehaviour {
         myAnimator = GetComponent<Animator>();
         myRigidBody = GetComponent<Rigidbody2D>();
         player = (Player)FindObjectOfType(typeof(Player));
-        myCollider = GetComponent<PolygonCollider2D>();
+        myTrigger = GetComponent<PolygonCollider2D>();
         currentState = State.Idle;
         containmentField.delaySeconds = trapDelay;
         containmentField.moveSpeed = fieldSpeed;
@@ -86,7 +91,9 @@ public class Lancelot : MonoBehaviour {
             case State.Idle:
                 pointOfOrigin = transform.position;
                 myRigidBody.velocity = new Vector2(0, 0);
+                transform.rotation = Quaternion.identity;
                 myAnimator.SetBool("isShield", false);
+                IdleMovement();
                 FlipSprite();
                 StartCoroutine(ChangeFromIdle());
                 break;
@@ -107,7 +114,8 @@ public class Lancelot : MonoBehaviour {
             case State.Deactive:
                 DestroyTraps();
                 myRigidBody.gravityScale = gravityScale;
-                myCollider.enabled = true;
+                myTrigger.enabled = false;
+                solidBody.SetActive(true);
                 tempDeactivate = true;
                 StartCoroutine(Recharge());
                 break;
@@ -117,6 +125,26 @@ public class Lancelot : MonoBehaviour {
         }
 		
 	}
+
+    void IdleMovement()
+    {
+        if (goUp == true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, topPoint.transform.position, idleFloatSpeed * Time.deltaTime);
+            if (transform.position.y >= topPoint.transform.position.y)
+            {
+                goUp = false;
+            }
+        }
+        else
+        {
+            transform.position = Vector2.MoveTowards(transform.position, bottomPoint.transform.position, idleFloatSpeed * Time.deltaTime);
+            if (transform.position.y <= bottomPoint.transform.position.y)
+            {
+                goUp = true;
+            }
+        }
+    }
 
     IEnumerator ChangeFromIdle()
     {
@@ -232,7 +260,7 @@ public class Lancelot : MonoBehaviour {
         {
             bool wait = false;
             becameShield = true;
-           myCollider.enabled = false;
+           //myCollider.enabled = false;
             myAnimator.SetBool("isShield", true);
 
             yield return new WaitForSeconds(chargeDelay);
@@ -241,19 +269,21 @@ public class Lancelot : MonoBehaviour {
             yield return new WaitForSeconds(flashInterval);
             flash.gameObject.SetActive(false);
             yield return new WaitForSeconds(flashInterval);
+            Vector3 playerPosition = player.transform.position;
             flash.gameObject.SetActive(true);
             //AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
             yield return new WaitForSeconds(flashInterval);
             flash.gameObject.SetActive(false);
-            Vector3 playerPosition = player.transform.position;
+
            // trackPlayer = false;
             yield return new WaitForSeconds(flashInterval);
-            while (transform.position != playerPosition)
+            while (!impact)
             {
                 if (wait == false)
                 {
                     wait = true;
-                    transform.position = Vector2.MoveTowards(transform.position, playerPosition, moveSpeed * Time.deltaTime * chargeSpeed);
+                    //transform.position = Vector2.MoveTowards(transform.position, playerPosition, moveSpeed * Time.deltaTime * chargeSpeed);
+                    myRigidBody.velocity = (transform.position + playerPosition) *(moveSpeed*chargeSpeed*Time.deltaTime);
                     yield return new WaitForSeconds(.001f);
                     wait = false;
                 }
@@ -283,7 +313,9 @@ public class Lancelot : MonoBehaviour {
     {
         myRigidBody.gravityScale = 0;
         tempDeactivate = false;
-        myCollider.enabled = false;
+        impact = false;
+        myTrigger.enabled = true;
+        solidBody.SetActive(false);
         Vector3 rotationReset = new Vector3(0, 0, 0);
         Vector3 direction = new Vector3(transform.position.x, -10 - transform.position.y, transform.position.z);
 
@@ -380,5 +412,22 @@ public class Lancelot : MonoBehaviour {
             handParticle.gameObject.SetActive(true);
         }
     }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Pain");
+        if (other.GetComponent<Player>())
+        {
+
+            FindObjectOfType<GameSession>().TakeLives();
+        }
+        if(other.gameObject.tag == "Platform")
+        {
+            Debug.Log("Impact");
+            impact = true;
+
+        }
+    }
+
+
 
 }
