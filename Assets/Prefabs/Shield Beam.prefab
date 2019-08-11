@@ -80,6 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthRate: 1
   maxLength: 75
+  energizeSound: {fileID: 8300000, guid: f0e6d703f4d5945979138d3e7a449569, type: 3}
 --- !u!212 &212161262486483872
 SpriteRenderer:
   m_ObjectHideFlags: 1

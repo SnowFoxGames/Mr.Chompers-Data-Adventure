@@ -6,8 +6,9 @@ public class ShieldBeam : MonoBehaviour {
 
     public float growthRate = .5f;
     [SerializeField] float maxLength = 75f;
+    [SerializeField] AudioClip energizeSound;
 	void Start () {
-		
+        AudioSource.PlayClipAtPoint(energizeSound, Camera.main.transform.position, .7f);
 	}
 	
 	// Update is called once per frame

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +11,8 @@ public class ShieldTrap : MonoBehaviour {
     public float delaySeconds =5f;
     [SerializeField] GameObject trap;
     [SerializeField] GameObject bubbleBackground;
+    [SerializeField] float speed = 2;
+    [SerializeField] AudioClip bounce;
 
     bool trapped = false;
     bool moving = true;
@@ -27,6 +28,8 @@ public class ShieldTrap : MonoBehaviour {
 	void Start () {
         player = (Player)FindObjectOfType(typeof(Player));
         radius = GetComponent<CircleCollider2D>().radius;
+
+        GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-10, 10)* speed, Random.Range(-10, 10)*speed);
        
 	}
 
@@ -44,8 +47,8 @@ public class ShieldTrap : MonoBehaviour {
     // Update is called once per frame
     void Update () 
     {
-        MoveTowardPlayer();
-
+        //MoveTowardPlayer();
+        FreeMove();
 
 	}
 
@@ -108,6 +111,16 @@ public class ShieldTrap : MonoBehaviour {
         }
 
     }
+
+    void FreeMove()
+    {
+        if(moving == true)
+        {
+            
+            StartCoroutine(CountdownToBubble());
+        }
+    }
+
     IEnumerator CountdownToBubble()
     {
         if(countingDown == false)
@@ -121,9 +134,18 @@ public class ShieldTrap : MonoBehaviour {
             bubbleBackground.GetComponent<SpriteRenderer>().color = temp; 
 
             trap.SetActive(true);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             moving = false;
         }
 
+
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(moving)
+        {
+            AudioSource.PlayClipAtPoint(bounce, Camera.main.transform.position, .7f);
+        }
 
     }
 }

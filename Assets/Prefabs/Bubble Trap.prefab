@@ -112,7 +112,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4046882306384548
 Transform:
   m_ObjectHideFlags: 1
@@ -187,8 +187,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1762882698664976}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.89, y: 3.7, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
+  m_LocalPosition: {x: -0.89008045, y: 2.8039842, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children:
   - {fileID: 4905965992763378}
   - {fileID: 4310560432343930}
@@ -223,15 +223,15 @@ Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1762882698664976}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 139a02a2d20fc4916aa294d903c31ea3, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -260,7 +260,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -324,7 +324,7 @@ BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1909961885741774}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -366,12 +366,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outerShield: {fileID: 1024215183545012}
-  buffer: -0.3
+  buffer: 0
   trapDistance: 0.7
-  moveSpeed: 2
-  delaySeconds: 5
+  moveSpeed: 1.5
+  delaySeconds: 3
   trap: {fileID: 1164100103359670}
   bubbleBackground: {fileID: 1564344124758882}
+  speed: 2
+  bounce: {fileID: 8300000, guid: e68ffae2469614d6f941915cd971329d, type: 3}
 --- !u!212 &212521623542132196
 SpriteRenderer:
   m_ObjectHideFlags: 1

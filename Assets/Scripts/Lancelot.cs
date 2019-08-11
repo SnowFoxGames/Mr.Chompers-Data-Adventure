@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Lancelot : MonoBehaviour {
 
+    [SerializeField] GameObject text;
+    [SerializeField] ParticleSystem explosionParticle;
+    [SerializeField] float explosionDuration = 1f;
     [SerializeField]bool shieldsOn = false;
     [SerializeField] List<Shield> shields = new List<Shield>();
     [SerializeField] List<EnergyBeams> beams = new List<EnergyBeams>();
@@ -43,6 +46,13 @@ public class Lancelot : MonoBehaviour {
     [SerializeField] float xShieldBeamPos;
     [SerializeField] float yShieldBeamPos;
     [SerializeField] float beamSpeed = 2.5f;
+    [Header("Sounds")]
+    [SerializeField] AudioClip chestBeep;
+    [SerializeField] AudioClip shieldCharge;
+    [SerializeField] AudioClip handCharge;
+    [SerializeField] AudioClip shieldChange;
+    [SerializeField] AudioClip crashSound;
+
 
 
 
@@ -82,6 +92,7 @@ public class Lancelot : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        text.transform.rotation = Quaternion.identity;
         Deactivate();
         ToggleShieldsAndBeams();
         //TrackPlayer();
@@ -250,7 +261,7 @@ public class Lancelot : MonoBehaviour {
 
         float ratio = Mathf.Abs(transform.localScale.x);
         transform.localScale = new Vector2(Mathf.Sign(transform.position.x - player.transform.position.x) * ratio, 1f * ratio);
-        //text.transform.localScale = new Vector2(transform.localScale.x / Mathf.Abs(transform.localScale.x), 1);
+        text.transform.localScale = new Vector2(transform.localScale.x / Mathf.Abs(transform.localScale.x), 1);
 
     }
 
@@ -262,34 +273,40 @@ public class Lancelot : MonoBehaviour {
             becameShield = true;
            //myCollider.enabled = false;
             myAnimator.SetBool("isShield", true);
+            AudioSource.PlayClipAtPoint(shieldChange, Camera.main.transform.position, .7f);
 
             yield return new WaitForSeconds(chargeDelay);
             flash.gameObject.SetActive(true);
-            //AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
             yield return new WaitForSeconds(flashInterval);
             flash.gameObject.SetActive(false);
             yield return new WaitForSeconds(flashInterval);
             Vector3 playerPosition = player.transform.position;
             flash.gameObject.SetActive(true);
-            //AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
+            AudioSource.PlayClipAtPoint(chestBeep, Camera.main.transform.position, .7f);
             yield return new WaitForSeconds(flashInterval);
             flash.gameObject.SetActive(false);
 
            // trackPlayer = false;
             yield return new WaitForSeconds(flashInterval);
+            var distance = Vector2.Distance(playerPosition, transform.position);
+            var direction = new Vector2((playerPosition.x - transform.position.x)/distance,
+                                        (playerPosition.y - transform.position.y)/distance);
+            AudioSource.PlayClipAtPoint(shieldCharge, Camera.main.transform.position, .4f);
             while (!impact)
             {
                 if (wait == false)
                 {
                     wait = true;
                     //transform.position = Vector2.MoveTowards(transform.position, playerPosition, moveSpeed * Time.deltaTime * chargeSpeed);
-                    myRigidBody.velocity = (transform.position + playerPosition) *(moveSpeed*chargeSpeed*Time.deltaTime);
+                    myRigidBody.velocity = (direction) *(moveSpeed*chargeSpeed*Time.deltaTime);
                     yield return new WaitForSeconds(.001f);
                     wait = false;
                 }
 
             }
-
+            AudioSource.PlayClipAtPoint(crashSound, Camera.main.transform.position, .7f);
+            StartCoroutine(ToggleExplosion());
             currentState = State.Deactive;
             becameShield = false;
         }
@@ -340,6 +357,7 @@ public class Lancelot : MonoBehaviour {
         {
             armRaised = true;
             myAnimator.SetBool("armRaised", true);
+
             yield return new WaitForSeconds(.5f);
             for (int i = 0; i < contFieldQuantity; i++)
             {
@@ -410,6 +428,7 @@ public class Lancelot : MonoBehaviour {
         else
         {
             handParticle.gameObject.SetActive(true);
+            AudioSource.PlayClipAtPoint(handCharge, Camera.main.transform.position, .7f);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
@@ -426,6 +445,12 @@ public class Lancelot : MonoBehaviour {
             impact = true;
 
         }
+    }
+    private IEnumerator ToggleExplosion()
+    {
+        explosionParticle.gameObject.SetActive(true);
+        yield return new WaitForSeconds(explosionDuration);
+        explosionParticle.gameObject.SetActive(false);
     }
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour {
 
@@ -23,4 +24,11 @@ public class ButtonManager : MonoBehaviour {
         activeButton.gameObject.SetActive(false);
         loadingScreen.SetActive(true);
     }
+    public void ReturnToStart()
+    {
+        Destroy(FindObjectOfType<MusicBox>().gameObject);
+        SceneManager.LoadScene(0);
+    }
+
+  
 }

@@ -2882,7 +2882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadbar: {fileID: 552244817}
-  levelName: Run 1
+  levelName: Run1
   playBossMusic: 0
 --- !u!1 &2046754064
 GameObject:
