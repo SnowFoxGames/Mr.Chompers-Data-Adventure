@@ -106,7 +106,10 @@ public class Lancelot : MonoBehaviour {
                 myAnimator.SetBool("isShield", false);
                 IdleMovement();
                 FlipSprite();
-                StartCoroutine(ChangeFromIdle());
+                if (player.isActiveAndEnabled)
+                {
+                    StartCoroutine(ChangeFromIdle());
+                }
                 break;
             case State.Contain:
                 FlipSprite();

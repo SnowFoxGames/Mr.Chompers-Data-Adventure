@@ -19,12 +19,12 @@ public class EnergyBeams : MonoBehaviour {
 	void Update () {
         if(delaying == false)
         {
-            Debug.Log("Spwan ENergy");
+            //Debug.Log("Spwan ENergy");
             StartCoroutine(CreateEnergy());
         }
         else
         {
-            Debug.Log("Destroy Energy");
+           //Debug.Log("Destroy Energy");
             var particle = FindObjectsOfType<EnergyParticle>();
             foreach (var item in particle)
             {

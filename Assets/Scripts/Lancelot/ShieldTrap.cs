@@ -29,7 +29,7 @@ public class ShieldTrap : MonoBehaviour {
         player = (Player)FindObjectOfType(typeof(Player));
         radius = GetComponent<CircleCollider2D>().radius;
 
-        GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-10, 10)* speed, Random.Range(-10, 10)*speed);
+       GetComponent<Rigidbody2D>().velocity = new Vector2(Random.Range(-10, 10)* speed, Random.Range(-10, 10)*speed);
        
 	}
 
@@ -49,7 +49,7 @@ public class ShieldTrap : MonoBehaviour {
     {
         //MoveTowardPlayer();
         FreeMove();
-
+        Debug.Log(distance);
 	}
 
     private void DetectPlayerPosition()
